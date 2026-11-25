@@ -1,449 +1,646 @@
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ClipStart — Start Your Clipping Journey</title>
-  <meta name="theme-color" content="#101a35">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ClipStart — Learn to Clip</title>
+  <meta name="description" content="Learn video clipping step by step with ClipStart.">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     :root {
-      --navy: #101a35;
-      --blue: #4778ff;
-      --light: #f4f7ff;
-      --text: #18213a;
-      --muted: #65708a;
-      --line: #e1e7f3;
+      --ink: #20251f;
+      --ink-soft: #343b32;
+      --paper: #f5f2e9;
+      --card: #fffdf7;
+      --line: #dcded2;
+      --muted: #6b7168;
+      --lime: #c9f36a;
+      --lime-dark: #a9d84d;
+      --orange: #e9794e;
+      --green: #236b43;
+      --red: #a52b25;
+      --radius: 18px;
     }
 
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      min-height: 100vh;
-      font-family: Arial, Helvetica, sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at 15% 10%, #e4ecff 0, transparent 35%),
-        var(--light);
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
-    header {
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+
+    .topbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
-      padding: 20px clamp(18px, 5vw, 64px);
+      gap: 18px;
+      padding: 16px max(20px, calc((100% - 1080px) / 2));
+      background: var(--ink);
+      color: var(--paper);
     }
 
     .brand {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 10px;
-      color: var(--navy);
-      font-size: 22px;
-      font-weight: 800;
-      letter-spacing: -0.6px;
+      gap: 11px;
+      color: var(--paper);
+      font-size: 1.3rem;
+      font-weight: 850;
+      letter-spacing: -.055em;
+      text-decoration: none;
     }
 
     .brand-mark {
+      width: 39px;
+      height: 39px;
       display: grid;
       place-items: center;
-      width: 38px;
-      height: 38px;
+      background: var(--lime);
       border-radius: 12px;
-      color: white;
-      background: var(--blue);
-      font-size: 20px;
+      flex: 0 0 auto;
     }
 
-    .header-note {
-      color: var(--muted);
-      font-size: 13px;
-    }
+    .brand-mark svg { width: 29px; height: 29px; display: block; }
+    .brand-word span { color: var(--lime); }
+    .top-note { color: #c8cec1; font-size: .86rem; }
 
     main {
-      width: min(1080px, 100%);
-      margin: 0 auto;
-      padding: 44px 20px 70px;
+      width: min(1080px, calc(100% - 32px));
+      margin: 44px auto 70px;
     }
 
+    .screen { display: none; }
+    .screen.active { display: block; }
+
     .hero {
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      align-items: center;
-      gap: 48px;
+      max-width: 730px;
+      margin: 0 auto 30px;
+      text-align: center;
     }
 
     .eyebrow {
       display: inline-block;
-      padding: 8px 12px;
-      border: 1px solid #d8e3ff;
+      padding: 7px 11px;
+      border: 1px solid #d2d9bc;
       border-radius: 999px;
-      color: #315bd0;
-      background: #edf2ff;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.4px;
+      background: #e9edda;
+      color: #414d2e;
+      font-size: .76rem;
+      font-weight: 800;
+      letter-spacing: .09em;
     }
 
     h1 {
-      margin: 20px 0 16px;
-      color: var(--navy);
-      font-size: clamp(38px, 6vw, 62px);
-      line-height: 1.04;
-      letter-spacing: -2px;
+      margin: 16px 0 13px;
+      color: var(--ink);
+      font-size: clamp(2.25rem, 7vw, 4rem);
+      line-height: 1.02;
+      letter-spacing: -.065em;
     }
 
-    .hero-copy {
-      max-width: 530px;
+    .hero p {
+      max-width: 610px;
+      margin: 0 auto;
       color: var(--muted);
-      font-size: 17px;
       line-height: 1.7;
     }
 
-    .feature-list {
-      display: grid;
-      gap: 12px;
-      margin-top: 26px;
-    }
-
-    .feature {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      color: #34405c;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .check {
-      display: grid;
-      place-items: center;
-      flex: 0 0 22px;
-      height: 22px;
-      border-radius: 50%;
-      color: #2458d6;
-      background: #e3ebff;
-      font-weight: 700;
-    }
-
-    .auth-card {
-      padding: 30px;
+    .panel {
+      width: min(100%, 490px);
+      margin: 0 auto;
+      padding: 27px;
       border: 1px solid var(--line);
-      border-radius: 24px;
-      background: white;
-      box-shadow: 0 22px 60px rgba(23, 43, 92, 0.10);
-    }
-
-    .auth-card h2 {
-      margin: 0 0 8px;
-      color: var(--navy);
-      font-size: 25px;
-    }
-
-    .auth-subtitle {
-      margin: 0 0 22px;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.5;
+      border-radius: 22px;
+      background: var(--card);
+      box-shadow: 0 18px 50px rgba(32, 37, 31, .07);
     }
 
     .tabs {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 5px;
+      gap: 7px;
+      margin-bottom: 23px;
       padding: 5px;
-      margin-bottom: 20px;
       border-radius: 12px;
-      background: #f0f3fa;
+      background: #eeeee5;
     }
 
     .tab {
       padding: 11px;
       border: 0;
       border-radius: 9px;
-      color: var(--muted);
       background: transparent;
-      font-weight: 700;
-      cursor: pointer;
+      color: var(--muted);
+      font-weight: 750;
     }
 
     .tab.active {
-      color: var(--navy);
-      background: white;
-      box-shadow: 0 2px 8px rgba(20, 35, 70, 0.08);
+      background: var(--card);
+      color: var(--ink);
+      box-shadow: 0 2px 7px #20251f12;
+    }
+
+    h2 {
+      margin: 0 0 8px;
+      color: var(--ink);
+      font-size: 1.55rem;
+      letter-spacing: -.035em;
+    }
+
+    .subtext {
+      margin: 0 0 20px;
+      color: var(--muted);
+      font-size: .93rem;
+      line-height: 1.6;
     }
 
     label {
       display: block;
-      margin: 15px 0 7px;
-      color: #34405c;
-      font-size: 13px;
-      font-weight: 700;
+      margin: 14px 0 7px;
+      font-size: .9rem;
+      font-weight: 750;
     }
 
     input {
       width: 100%;
       padding: 13px 14px;
-      border: 1px solid #d8dfed;
-      border-radius: 11px;
-      outline: none;
-      color: var(--text);
-      background: white;
-      font-size: 15px;
+      border: 1px solid #cfd3c7;
+      border-radius: 10px;
+      background: #fffefa;
+      color: var(--ink);
     }
 
     input:focus {
-      border-color: var(--blue);
-      box-shadow: 0 0 0 3px rgba(71, 120, 255, 0.12);
+      outline: 3px solid #c9f36a66;
+      border-color: #829c4c;
     }
 
-    .primary-button {
+    .primary, .secondary {
       width: 100%;
-      margin-top: 20px;
-      padding: 14px;
-      border: 0;
-      border-radius: 11px;
-      color: white;
-      background: var(--blue);
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
+      margin-top: 17px;
+      padding: 13px 16px;
+      border-radius: 10px;
+      font-weight: 850;
     }
 
-    .primary-button:disabled {
-      opacity: 0.65;
-      cursor: wait;
+    .primary {
+      border: 1px solid var(--lime);
+      background: var(--lime);
+      color: var(--ink);
     }
+
+    .primary:hover { background: var(--lime-dark); }
+
+    .secondary {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--ink);
+    }
+
+    button:disabled { opacity: .6; cursor: wait; }
 
     .message {
       display: none;
-      margin-top: 16px;
-      padding: 12px;
+      margin-top: 15px;
+      padding: 12px 14px;
       border-radius: 10px;
-      font-size: 13px;
+      font-size: .92rem;
       line-height: 1.5;
       overflow-wrap: anywhere;
     }
 
     .message.show { display: block; }
-    .message.success { color: #17643d; background: #e9f8ef; }
-    .message.error { color: #9c2f2f; background: #fff0f0; }
+    .message.success { background: #e7f3e7; color: var(--green); }
+    .message.error { background: #fbe9e6; color: var(--red); }
 
-    .fine-print {
-      margin: 16px 0 0;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.5;
-      text-align: center;
+    .confirmation-mark {
+      display: grid;
+      width: 58px;
+      height: 58px;
+      place-items: center;
+      margin-bottom: 18px;
+      border-radius: 16px;
+      background: var(--lime);
+      color: var(--ink);
+      font-size: 1.8rem;
+      font-weight: 900;
     }
 
-    .bottom-note {
-      margin-top: 55px;
+    .steps {
+      padding-left: 21px;
       color: var(--muted);
-      font-size: 12px;
+      line-height: 1.75;
+    }
+
+    .dashboard-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .dashboard-head h2 {
+      margin-top: 12px;
+      font-size: clamp(1.8rem, 5vw, 2.6rem);
+    }
+
+    .dashboard-head p {
+      color: var(--muted);
+      overflow-wrap: anywhere;
+    }
+
+    .logout {
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--card);
+      color: var(--ink);
+      font-weight: 750;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .dash-card {
+      min-height: 190px;
+      padding: 23px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--card);
+    }
+
+    .dash-card h3 {
+      margin: 0 0 9px;
+      color: var(--ink);
+      font-size: 1.15rem;
+      letter-spacing: -.025em;
+    }
+
+    .dash-card p {
+      margin: 0;
+      color: var(--muted);
       line-height: 1.6;
+    }
+
+    .status {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 6px 9px;
+      border-radius: 7px;
+      background: #ecefe4;
+      color: #4e5846;
+      font-size: .78rem;
+      font-weight: 800;
+    }
+
+    .notice {
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-left: 4px solid var(--orange);
+      border-radius: 10px;
+      background: #f8e9df;
+      color: #6d412f;
+      line-height: 1.6;
+    }
+
+    .footer {
+      margin-top: 28px;
+      color: var(--muted);
+      font-size: .82rem;
       text-align: center;
     }
 
-    @media (max-width: 760px) {
-      main { padding-top: 24px; }
-      .hero { grid-template-columns: 1fr; gap: 30px; }
-      .hero-copy { font-size: 15px; }
-      .auth-card { padding: 24px 20px; }
-      .header-note { display: none; }
+    @media (max-width: 620px) {
+      main { margin-top: 28px; }
+      .panel { padding: 21px; }
+      .dashboard-grid { grid-template-columns: 1fr; }
+      .dashboard-head { flex-direction: column; }
+      .logout { width: 100%; }
+      .top-note { display: none; }
     }
   </style>
 </head>
+
 <body>
-  <header>
-    <div class="brand">
-      <span class="brand-mark">C</span>
-      <span>ClipStart</span>
-    </div>
-    <div class="header-note">Your journey from beginner to confident clipper</div>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="ClipStart home">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 11H21C28 11 32 15 32 20C32 25 28 29 21 29H8V11Z" stroke="#20251F" stroke-width="4" stroke-linejoin="round"/>
+          <path d="M8 20H22" stroke="#20251F" stroke-width="4" stroke-linecap="round"/>
+          <path d="M22 14L29 20L22 26" stroke="#20251F" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span class="brand-word">Clip<span>Start</span></span>
+    </a>
+    <div class="top-note">A better start for your creator journey</div>
   </header>
 
   <main>
-    <section class="hero">
-      <div>
-        <span class="eyebrow">YOUR CLIPPING JOURNEY STARTS HERE</span>
-        <h1>Learn to clip.<br>Build your skills.</h1>
-        <p class="hero-copy">
-          A beginner-friendly learning platform for people who want to learn
-          campaign clipping or grow an organic short-form video account.
-          Follow practical steps, learn at your pace, and track your progress.
-        </p>
-
-        <div class="feature-list">
-          <div class="feature">
-            <span class="check">✓</span>
-            <span>Learn about YouTube Shorts, TikTok and Instagram Reels.</span>
-          </div>
-          <div class="feature">
-            <span class="check">✓</span>
-            <span>Choose campaign clipping, organic clipping, or both.</span>
-          </div>
-          <div class="feature">
-            <span class="check">✓</span>
-            <span>Build skills with guided lessons and progress tracking.</span>
-          </div>
-        </div>
+    <section id="welcome" class="screen active">
+      <div class="hero">
+        <span class="eyebrow">LEARN · PRACTISE · IMPROVE</span>
+        <h1>Make your first clip count.</h1>
+        <p>Build your clipping skills one clear step at a time. Start with the basics, practise with purpose, and track your progress.</p>
       </div>
 
-      <section class="auth-card" aria-label="Account access">
-        <h2 id="form-title">Create your account</h2>
-        <p class="auth-subtitle" id="form-subtitle">
-          Start with a free account. You can choose your learning path after signing up.
-        </p>
-
-        <div class="tabs">
-          <button class="tab active" id="signup-tab" type="button">Sign up</button>
-          <button class="tab" id="login-tab" type="button">Log in</button>
+      <div class="panel">
+        <div class="tabs" role="tablist" aria-label="Account options">
+          <button class="tab active" id="signupTab" type="button">Create account</button>
+          <button class="tab" id="loginTab" type="button">Log in</button>
         </div>
 
-        <form id="auth-form">
-          <div id="name-field">
-            <label for="full-name">Your name</label>
-            <input id="full-name" name="full-name" type="text"
-              autocomplete="name" placeholder="Enter your name" required>
+        <form id="authForm">
+          <h2 id="formTitle">Create your ClipStart account</h2>
+          <p class="subtext" id="formDescription">Use an email address you can open to confirm your account.</p>
+
+          <div id="nameField">
+            <label for="fullName">Your name</label>
+            <input id="fullName" type="text" autocomplete="name" placeholder="Enter your name" required>
           </div>
 
           <label for="email">Email address</label>
-          <input id="email" name="email" type="email"
-            autocomplete="email" placeholder="you@example.com" required>
+          <input id="email" type="email" autocomplete="email" placeholder="you@example.com" required>
 
           <label for="password">Password</label>
-          <input id="password" name="password" type="password"
-            autocomplete="new-password" minlength="6"
-            placeholder="At least 6 characters" required>
+          <input id="password" type="password" autocomplete="new-password" placeholder="At least 6 characters" minlength="6" required>
 
-          <button class="primary-button" id="submit-button" type="submit">
-            Create account
-          </button>
+          <button class="primary" id="submitButton" type="submit">Create account</button>
+          <div id="authMessage" class="message" role="status" aria-live="polite"></div>
         </form>
-
-        <div class="message" id="message" role="status" aria-live="polite"></div>
-
-        <p class="fine-print">
-          ClipStart is a learning platform. Views, campaign acceptance and earnings
-          are not guaranteed.
-        </p>
-      </section>
+      </div>
     </section>
 
-    <p class="bottom-note">
-      ClipStart helps beginners learn and practice. Results depend on each learner,
-      platform rules, campaign requirements and many other factors.
-    </p>
+    <section id="confirmation" class="screen">
+      <div class="panel">
+        <div class="confirmation-mark" aria-hidden="true">✓</div>
+        <h2>Check your email</h2>
+        <p class="subtext">Your account has been created, but it may not be confirmed yet. Open the confirmation email and tap its link. Then return here and log in.</p>
+        <p><strong>Email sent to:</strong> <span id="confirmationEmail"></span></p>
+        <ol class="steps">
+          <li>Check your inbox and spam or junk folder.</li>
+          <li>Open the confirmation email and tap its link.</li>
+          <li>Return to ClipStart and log in with the same email and password.</li>
+        </ol>
+        <button class="primary" id="backToLogin" type="button">Back to login</button>
+        <button class="secondary" id="resendButton" type="button">Resend confirmation email</button>
+        <div id="confirmationMessage" class="message" role="status" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section id="dashboard" class="screen">
+      <div class="dashboard-head">
+        <div>
+          <span class="eyebrow">YOUR CLIPSTART SPACE</span>
+          <h2 id="welcomeName">Welcome to ClipStart</h2>
+          <p id="signedInEmail"></p>
+        </div>
+        <button class="logout" id="logoutButton" type="button">Log out</button>
+      </div>
+
+      <div class="dashboard-grid">
+        <article class="dash-card">
+          <h3>Campaign Clipper</h3>
+          <p>Learn how campaign clipping works and what to check before choosing a campaign.</p>
+          <span class="status">Learning path setup next</span>
+        </article>
+
+        <article class="dash-card">
+          <h3>Organic Clipper</h3>
+          <p>Learn how to build your own short-form account with a clear niche and a practical routine.</p>
+          <span class="status">Learning path setup next</span>
+        </article>
+
+        <article class="dash-card">
+          <h3>Your social accounts</h3>
+          <p>Manage your TikTok, YouTube Shorts, and Instagram accounts from one ClipStart login.</p>
+          <span class="status">Account manager setup next</span>
+        </article>
+
+        <article class="dash-card">
+          <h3>Your learning progress</h3>
+          <p>Keep track of lessons, daily tasks, and the steps you have completed.</p>
+          <span class="status">Progress tracking setup next</span>
+        </article>
+      </div>
+
+      <div class="notice">You’re signed in. This is the first dashboard stage; learning paths, account setup, and saved progress still need to be added and tested before launch.</div>
+    </section>
+
+    <div class="footer">ClipStart is a learning platform. Views, campaign acceptance, and income are not guaranteed.</div>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const SUPABASE_URL = "https://aediklkwwlhcxrgbdybm.supabase.co";
     const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_v52jl2uiWewjY_-2u67Rjw_KnRoglAW";
+    const APP_URL = window.location.origin + window.location.pathname;
 
-    const messageBox = document.getElementById("message");
-    const submitButton = document.getElementById("submit-button");
-    const nameField = document.getElementById("name-field");
-    const fullNameInput = document.getElementById("full-name");
-    const emailInput = document.getElementById("email");
-    const passwordInput = document.getElementById("password");
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY,
+      {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true
+        }
+      }
+    );
 
-    let mode = "signup";
-    let supabaseClient = null;
+    const screens = {
+      welcome: document.getElementById("welcome"),
+      confirmation: document.getElementById("confirmation"),
+      dashboard: document.getElementById("dashboard")
+    };
 
-    function showMessage(text, type) {
-      messageBox.textContent = text;
-      messageBox.className = "message show " + type;
+    let currentMode = "signup";
+    let pendingEmail = "";
+
+    function showScreen(name) {
+      Object.entries(screens).forEach(([key, screen]) => {
+        screen.classList.toggle("active", key === name);
+      });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
-    function setMode(nextMode) {
-      mode = nextMode;
-      const signingUp = mode === "signup";
-
-      document.getElementById("signup-tab").classList.toggle("active", signingUp);
-      document.getElementById("login-tab").classList.toggle("active", !signingUp);
-      nameField.style.display = signingUp ? "block" : "none";
-      fullNameInput.required = signingUp;
-      passwordInput.autocomplete = signingUp ? "new-password" : "current-password";
-      document.getElementById("form-title").textContent =
-        signingUp ? "Create your account" : "Welcome back";
-      document.getElementById("form-subtitle").textContent =
-        signingUp
-          ? "Start with a free account. You can choose your learning path after signing up."
-          : "Log in to continue your ClipStart learning journey.";
-      submitButton.textContent = signingUp ? "Create account" : "Log in";
-      messageBox.className = "message";
-      messageBox.textContent = "";
+    function showMessage(element, text, type) {
+      element.textContent = text;
+      element.className = "message show " + type;
     }
 
-    document.getElementById("signup-tab").addEventListener("click", () => setMode("signup"));
-    document.getElementById("login-tab").addEventListener("click", () => setMode("login"));
+    function clearMessage(element) {
+      element.textContent = "";
+      element.className = "message";
+    }
 
-    document.getElementById("auth-form").addEventListener("submit", async (event) => {
+    function setMode(mode) {
+      currentMode = mode;
+      const isSignup = mode === "signup";
+
+      document.getElementById("signupTab").classList.toggle("active", isSignup);
+      document.getElementById("loginTab").classList.toggle("active", !isSignup);
+      document.getElementById("nameField").style.display = isSignup ? "block" : "none";
+      document.getElementById("fullName").required = isSignup;
+      document.getElementById("password").autocomplete = isSignup ? "new-password" : "current-password";
+      document.getElementById("formTitle").textContent = isSignup
+        ? "Create your ClipStart account"
+        : "Log in to ClipStart";
+      document.getElementById("formDescription").textContent = isSignup
+        ? "Use an email address you can open to confirm your account."
+        : "Enter the email and password you used to create your account.";
+      document.getElementById("submitButton").textContent = isSignup ? "Create account" : "Log in";
+      clearMessage(document.getElementById("authMessage"));
+    }
+
+    function showDashboard(user) {
+      if (!user) return;
+
+      const name = user.user_metadata?.full_name || user.email?.split("@")[0] || "ClipStart learner";
+      document.getElementById("welcomeName").textContent = "Welcome, " + name;
+      document.getElementById("signedInEmail").textContent = user.email || "";
+      showScreen("dashboard");
+    }
+
+    document.getElementById("signupTab").addEventListener("click", () => setMode("signup"));
+    document.getElementById("loginTab").addEventListener("click", () => setMode("login"));
+
+    document.getElementById("authForm").addEventListener("submit", async (event) => {
       event.preventDefault();
-      messageBox.className = "message";
-      messageBox.textContent = "";
 
-      if (!window.supabase || !window.supabase.createClient) {
-        showMessage(
-          "The account service could not load. Check your internet connection and try again.",
-          "error"
-        );
-        return;
-      }
+      const button = document.getElementById("submitButton");
+      const message = document.getElementById("authMessage");
+      const fullName = document.getElementById("fullName").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
 
-      if (!supabaseClient) {
-        supabaseClient = window.supabase.createClient(
-          SUPABASE_URL,
-          SUPABASE_PUBLISHABLE_KEY
-        );
-      }
-
-      const email = emailInput.value.trim();
-      const password = passwordInput.value;
-      const fullName = fullNameInput.value.trim();
-
-      submitButton.disabled = true;
-      submitButton.textContent = mode === "signup" ? "Creating account…" : "Logging in…";
+      clearMessage(message);
+      button.disabled = true;
+      button.textContent = currentMode === "signup" ? "Creating account…" : "Logging in…";
 
       try {
-        if (mode === "signup") {
+        if (currentMode === "signup") {
           const { data, error } = await supabaseClient.auth.signUp({
             email,
             password,
             options: {
+              emailRedirectTo: APP_URL,
               data: { full_name: fullName }
             }
           });
 
           if (error) throw error;
 
-          if (data.session) {
-            showMessage("Your account was created and you are logged in.", "success");
+          pendingEmail = email;
+          document.getElementById("confirmationEmail").textContent = email;
+
+          if (data.session && data.user) {
+            showDashboard(data.user);
           } else {
-            showMessage(
-              "Account created. Check your email for the confirmation link, then return here and log in.",
-              "success"
-            );
+            showScreen("confirmation");
           }
         } else {
-          const { error } = await supabaseClient.auth.signInWithPassword({
-            email,
-            password
-          });
-
+          const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
           if (error) throw error;
-          showMessage("You are logged in. Your ClipStart account is connected.", "success");
+          showDashboard(data.user);
         }
       } catch (error) {
-        showMessage(error.message || "Something went wrong. Please try again.", "error");
+        let messageText = error.message || "Something went wrong. Please try again.";
+
+        if (messageText.toLowerCase().includes("email not confirmed")) {
+          messageText = "Your email is not confirmed yet. Open the confirmation email first, then return and log in.";
+        }
+
+        showMessage(message, messageText, "error");
       } finally {
-        submitButton.disabled = false;
-        submitButton.textContent = mode === "signup" ? "Create account" : "Log in";
+        button.disabled = false;
+        button.textContent = currentMode === "signup" ? "Create account" : "Log in";
       }
     });
+
+    document.getElementById("backToLogin").addEventListener("click", () => {
+      showScreen("welcome");
+      setMode("login");
+    });
+
+    document.getElementById("resendButton").addEventListener("click", async () => {
+      const button = document.getElementById("resendButton");
+      const message = document.getElementById("confirmationMessage");
+
+      if (!pendingEmail) {
+        showMessage(message, "No email is saved for resending. Return to login and try again with your account email.", "error");
+        return;
+      }
+
+      button.disabled = true;
+      button.textContent = "Sending…";
+      clearMessage(message);
+
+      try {
+        const { error } = await supabaseClient.auth.resend({
+          type: "signup",
+          email: pendingEmail,
+          options: { emailRedirectTo: APP_URL }
+        });
+
+        if (error) throw error;
+
+        showMessage(
+          message,
+          "A resend request was submitted. Check your inbox and spam folder. If you recently requested a link, wait before trying again.",
+          "success"
+        );
+      } catch (error) {
+        showMessage(message, error.message || "Could not resend the email. Please wait and try again later.", "error");
+      } finally {
+        button.disabled = false;
+        button.textContent = "Resend confirmation email";
+      }
+    });
+
+    document.getElementById("logoutButton").addEventListener("click", async () => {
+      const { error } = await supabaseClient.auth.signOut();
+
+      if (error) {
+        alert("Could not log out: " + error.message);
+        return;
+      }
+
+      showScreen("welcome");
+      setMode("login");
+      document.getElementById("password").value = "";
+    });
+
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      if (session?.user && (
+        event === "SIGNED_IN" ||
+        event === "INITIAL_SESSION" ||
+        event === "TOKEN_REFRESHED"
+      )) {
+        showDashboard(session.user);
+      } else if (event === "SIGNED_OUT") {
+        showScreen("welcome");
+        setMode("login");
+      }
+    });
+
+    (async function restoreLogin() {
+      const { data, error } = await supabaseClient.auth.getSession();
+      if (!error && data.session?.user) {
+        showDashboard(data.session.user);
+      }
+    })();
   </script>
 </body>
 </html>
