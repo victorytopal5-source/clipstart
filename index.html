@@ -449,6 +449,46 @@
         <div id="accountList"><p class="small">Your saved accounts will appear here.</p></div>
       </div>
     </section>
+    <!-- FEATURE: WARM-UP DASHBOARD -->
+    <section id="warmupScreen" class="hidden">
+      <div class="panel">
+        <div class="section-heading">
+          <div>
+            <div class="kicker" style="color:var(--muted)">YOUR LEARNING JOURNEY</div>
+            <h1>Warm-up dashboard</h1>
+          </div>
+          <span class="tag">Step 3</span>
+        </div>
+
+        <p id="warmupIntro">
+          Build a steady learning routine with small daily tasks for your social account.
+        </p>
+
+        <div id="warmupAccount" class="message">
+          Your selected social account will appear here.
+        </div>
+
+        <div id="warmupMessage" class="message hidden" role="status"></div>
+
+        <div class="section-heading">
+          <h2 id="warmupDayTitle">Day 1</h2>
+          <span id="warmupTaskCount" class="small">0 of 0 tasks complete</span>
+        </div>
+
+        <div id="warmupTaskList">
+          <p class="small">Your warm-up tasks will appear here.</p>
+        </div>
+
+        <div class="button-row">
+          <button id="warmupNextDayBtn" class="primary" type="button" disabled>
+            Next day
+          </button>
+          <button id="warmupRefreshBtn" class="secondary" type="button">
+            Refresh tasks
+          </button>
+        </div>
+      </div>
+    </section> 
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
