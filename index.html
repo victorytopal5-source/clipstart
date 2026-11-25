@@ -1,5 +1,717 @@
-<select id="platform">
-  <option value="youtube">YouTube Shorts</option>
-  <option value="tiktok">TikTok</option>
-  <option value="instagram">Instagram Reels</option>
-</select>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ClipStart — Learn Clipping</title>
+  <style>
+    :root {
+      --ink: #252920;
+      --paper: #f5f2e9;
+      --lime: #c9f36a;
+      --orange: #e9794e;
+      --muted: #777b70;
+      --line: #deded3;
+      --white: #fffdf7;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 15px 5%;
+      border-bottom: 1px solid var(--line);
+      background: var(--paper);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: var(--lime);
+    }
+
+    .brand-mark svg {
+      width: 34px;
+      height: 34px;
+      fill: none;
+      stroke: var(--ink);
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .brand-mark .spark {
+      stroke: var(--orange);
+      stroke-width: 5;
+    }
+
+    main {
+      width: min(1040px, 92%);
+      margin: 30px auto 60px;
+    }
+
+    .hidden { display: none !important; }
+
+    .auth-layout {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .brand-story {
+      padding: clamp(24px, 5vw, 44px);
+      border-radius: 24px;
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .brand-story .brand { margin-bottom: 42px; }
+    .brand-story h1 {
+      margin: 12px 0;
+      font-size: clamp(34px, 5vw, 54px);
+      line-height: 1.03;
+      letter-spacing: -1.8px;
+    }
+
+    .kicker {
+      color: var(--lime);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.6px;
+    }
+
+    .brand-copy {
+      max-width: 470px;
+      color: #d1d2c8;
+      line-height: 1.6;
+    }
+
+    .brand-points {
+      display: grid;
+      gap: 13px;
+      margin-top: 30px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .brand-points div {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-points span {
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      border: 1px solid #65695c;
+      border-radius: 9px;
+      color: var(--lime);
+      font-size: 11px;
+    }
+
+    .brand-note {
+      margin-top: 32px;
+      color: #b9bcb0;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .panel {
+      margin: 16px 0;
+      padding: clamp(20px, 4vw, 30px);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: var(--white);
+    }
+
+    .auth-card {
+      align-self: center;
+      padding: clamp(22px, 4vw, 36px);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: var(--white);
+    }
+
+    .auth-card h2, .panel h2 {
+      margin: 8px 0 12px;
+      font-size: 24px;
+      letter-spacing: -0.6px;
+    }
+
+    p {
+      color: #62665b;
+      line-height: 1.55;
+    }
+
+    label {
+      display: block;
+      margin: 15px 0 7px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    input, select {
+      width: 100%;
+      min-height: 46px;
+      padding: 12px;
+      border: 1px solid #c9cabe;
+      border-radius: 10px;
+      background: white;
+      color: var(--ink);
+    }
+
+    input:focus, select:focus {
+      outline: 2px solid var(--lime);
+      border-color: var(--ink);
+    }
+
+    button {
+      min-height: 44px;
+      padding: 12px 16px;
+      border: 0;
+      border-radius: 11px;
+      background: var(--ink);
+      color: white;
+      font-weight: 700;
+    }
+
+    button.primary {
+      background: var(--lime);
+      color: var(--ink);
+    }
+
+    button.secondary {
+      background: #e8e8de;
+      color: var(--ink);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .button-row button { flex: 1; }
+
+    .message {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 10px;
+      background: #efefe6;
+      color: var(--ink);
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    .warning {
+      margin-top: 14px;
+      padding: 13px;
+      border-left: 4px solid var(--orange);
+      border-radius: 9px;
+      background: #f4eadc;
+      color: #554336;
+      line-height: 1.5;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .section-heading {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .account-item {
+      margin-top: 12px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    .account-item strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .tag {
+      display: inline-block;
+      margin-bottom: 8px;
+      padding: 5px 9px;
+      border-radius: 20px;
+      background: var(--lime);
+      color: var(--ink);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    @media (max-width: 760px) {
+      header { padding: 12px 4%; }
+      main { margin-top: 18px; }
+      .auth-layout { grid-template-columns: 1fr; }
+      .brand-story h1 { font-size: 36px; }
+      .brand-story .brand { margin-bottom: 28px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 64 64">
+          <path d="M43 15a23 23 0 1 0 0 34"></path>
+          <path d="M17 32h28"></path>
+          <path d="m36 22 10 10-10 10"></path>
+          <path class="spark" d="M50 5v10M45 10h10"></path>
+        </svg>
+      </span>
+      <span>ClipStart</span>
+    </div>
+    <button id="logoutBtn" class="secondary hidden" type="button">Log out</button>
+  </header>
+
+  <main>
+    <!-- FEATURE: SIGN UP / LOG IN -->
+    <section id="authScreen" class="auth-layout">
+      <div class="brand-story">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 64 64">
+              <path d="M43 15a23 23 0 1 0 0 34"></path>
+              <path d="M17 32h28"></path>
+              <path d="m36 22 10 10-10 10"></path>
+              <path class="spark" d="M50 5v10M45 10h10"></path>
+            </svg>
+          </span>
+          <span>ClipStart</span>
+        </div>
+
+        <div class="kicker">YOUR CLIPPING JOURNEY STARTS HERE</div>
+        <h1>Learn the skill. Build your path.</h1>
+        <p class="brand-copy">
+          A beginner-friendly place to learn clipping, set up your social account,
+          and follow your progress one step at a time.
+        </p>
+
+        <div class="brand-points">
+          <div><span>01</span> Choose your learning path</div>
+          <div><span>02</span> Set up your social account</div>
+          <div><span>03</span> Learn and track your progress</div>
+        </div>
+
+        <p class="brand-note">
+          ClipStart teaches skills. Views, campaign acceptance, and income are not guaranteed.
+        </p>
+      </div>
+
+      <div class="auth-card">
+        <div class="kicker" style="color:var(--muted)">WELCOME TO CLIPSTART</div>
+        <h2>Start where you are.</h2>
+        <p>Create an account to save your learning journey, or log in to continue.</p>
+
+        <label for="email">Email address</label>
+        <input id="email" type="email" autocomplete="email" placeholder="you@example.com">
+
+        <label for="password">Password</label>
+        <input id="password" type="password" autocomplete="current-password" placeholder="At least 6 characters">
+
+        <div class="button-row">
+          <button id="signupBtn" class="primary" type="button">Create account</button>
+          <button id="loginBtn" type="button">Log in</button>
+        </div>
+
+        <div id="authMessage" class="message hidden" role="status"></div>
+        <p class="small">Use your own account and follow the rules of each social platform and campaign.</p>
+      </div>
+    </section>
+
+    <!-- FEATURE: LEARNING PATH CHOICE -->
+    <section id="pathScreen" class="hidden">
+      <div class="panel">
+        <div class="section-heading">
+          <div>
+            <div class="kicker" style="color:var(--muted)">YOUR NEXT STEP</div>
+            <h1>Choose your learning path.</h1>
+          </div>
+          <span class="tag">Step 1</span>
+        </div>
+        <p>Choose the type of clipping you want to learn. You can change your choice later.</p>
+
+        <label for="learningMode">Learning path</label>
+        <select id="learningMode">
+          <option value="campaign">Campaign Clipper</option>
+          <option value="organic">Organic Clipper</option>
+          <option value="both">Both paths</option>
+        </select>
+
+        <div id="bothWarning" class="warning hidden">
+          Managing both paths may be more complicated for a beginner. We recommend starting with one,
+          but you can still continue with both.
+        </div>
+
+        <div class="button-row">
+          <button id="continueToAccounts" class="primary" type="button">Continue to account setup</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURE: SOCIAL ACCOUNT SETUP -->
+    <section id="accountScreen" class="hidden">
+      <div class="panel">
+        <div class="section-heading">
+          <div>
+            <div class="kicker" style="color:var(--muted)">ACCOUNT SETUP</div>
+            <h1>Add your social account.</h1>
+          </div>
+          <span class="tag">Step 2</span>
+        </div>
+        <p id="chosenPathText">Set up the social account you plan to use.</p>
+
+        <label for="platform">Platform</label>
+        <select id="platform">
+          <option value="youtube">YouTube Shorts</option>
+          <option value="tiktok">TikTok</option>
+          <option value="instagram">Instagram Reels</option>
+        </select>
+
+        <label for="niche">Content niche</label>
+        <select id="niche">
+          <option value="football">Football</option>
+          <option value="podcasts">Podcasts</option>
+          <option value="entertainment">Entertainment</option>
+          <option value="motivation">Motivation</option>
+          <option value="business">Business</option>
+          <option value="lifestyle">Lifestyle</option>
+          <option value="education">Education</option>
+          <option value="other">Other</option>
+        </select>
+
+        <label for="creatorName">Creator name</label>
+        <input id="creatorName" type="text" placeholder="Name shown on your account">
+
+        <label for="username">Username / handle</label>
+        <input id="username" type="text" placeholder="@yourhandle">
+
+        <div class="button-row">
+          <button id="saveAccountBtn" class="primary" type="button">Save social account</button>
+          <button id="backToPathBtn" class="secondary" type="button">Back</button>
+        </div>
+
+        <div id="accountMessage" class="message hidden" role="status"></div>
+      </div>
+
+      <div class="panel">
+        <div class="section-heading">
+          <h2>Your saved social accounts</h2>
+          <button id="refreshAccountsBtn" class="secondary" type="button">Refresh list</button>
+        </div>
+        <div id="accountList"><p class="small">Your saved accounts will appear here.</p></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    // SUPABASE CONNECTION
+    const SUPABASE_URL = "https://aediklkwwlhcxrgbdybm.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_v52jl2uiWewjY_-2u67Rjw_KnRoglAW";
+    const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const byId = (id) => document.getElementById(id);
+    let signedInUser = null;
+    let selectedMode = "campaign";
+
+    function showMessage(id, message) {
+      const element = byId(id);
+      element.textContent = message;
+      element.classList.remove("hidden");
+    }
+
+    function clearMessage(id) {
+      byId(id).textContent = "";
+      byId(id).classList.add("hidden");
+    }
+
+    function setBusy(button, busy, busyLabel) {
+      if (busy) {
+        button.dataset.originalLabel = button.textContent;
+        button.textContent = busyLabel;
+        button.disabled = true;
+      } else {
+        button.textContent = button.dataset.originalLabel || button.textContent;
+        button.disabled = false;
+      }
+    }
+
+    function showScreen(screenId) {
+      ["authScreen", "pathScreen", "accountScreen"].forEach((id) => {
+        byId(id).classList.toggle("hidden", id !== screenId);
+      });
+    }
+
+    function updatePathWarning() {
+      byId("bothWarning").classList.toggle("hidden", byId("learningMode").value !== "both");
+    }
+
+    function showPathScreen() {
+      showScreen("pathScreen");
+      byId("logoutBtn").classList.remove("hidden");
+    }
+
+    function showAccountScreen() {
+      selectedMode = byId("learningMode").value;
+      const pathNames = {
+        campaign: "Campaign Clipper",
+        organic: "Organic Clipper",
+        both: "Both learning paths"
+      };
+      byId("chosenPathText").textContent =
+        "Selected path: " + pathNames[selectedMode] +
+        ". Add the social account you plan to use. You can add more accounts later.";
+      showScreen("accountScreen");
+      loadAccounts();
+    }
+
+    function showSignedOut() {
+      signedInUser = null;
+      showScreen("authScreen");
+      byId("logoutBtn").classList.add("hidden");
+    }
+
+    byId("learningMode").addEventListener("change", updatePathWarning);
+    byId("continueToAccounts").addEventListener("click", showAccountScreen);
+    byId("backToPathBtn").addEventListener("click", showPathScreen);
+
+    // SIGN UP
+    byId("signupBtn").addEventListener("click", async () => {
+      clearMessage("authMessage");
+      const email = byId("email").value.trim();
+      const password = byId("password").value;
+
+      if (!email || password.length < 6) {
+        showMessage("authMessage", "Enter a valid email and a password with at least 6 characters.");
+        return;
+      }
+
+      const button = byId("signupBtn");
+      setBusy(button, true, "Creating account…");
+
+      const { data, error } = await db.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: window.location.origin + window.location.pathname
+        }
+      });
+
+      setBusy(button, false);
+
+      if (error) {
+        showMessage("authMessage", error.message);
+        return;
+      }
+
+      if (data.session) {
+        signedInUser = data.session.user;
+        showPathScreen();
+      } else {
+        showMessage(
+          "authMessage",
+          "Account created. Check your email for the confirmation link. After confirming, return here and log in."
+        );
+      }
+    });
+
+    // LOG IN
+    byId("loginBtn").addEventListener("click", async () => {
+      clearMessage("authMessage");
+      const email = byId("email").value.trim();
+      const password = byId("password").value;
+
+      if (!email || !password) {
+        showMessage("authMessage", "Enter your email and password.");
+        return;
+      }
+
+      const button = byId("loginBtn");
+      setBusy(button, true, "Logging in…");
+
+      const { data, error } = await db.auth.signInWithPassword({ email, password });
+
+      setBusy(button, false);
+
+      if (error) {
+        showMessage("authMessage", error.message);
+        return;
+      }
+
+      signedInUser = data.user;
+      showPathScreen();
+    });
+
+    // LOG OUT
+    byId("logoutBtn").addEventListener("click", async () => {
+      await db.auth.signOut();
+      showSignedOut();
+    });
+
+    // SAVE SOCIAL ACCOUNT
+    byId("saveAccountBtn").addEventListener("click", async () => {
+      clearMessage("accountMessage");
+
+      if (!signedInUser) {
+        showMessage("accountMessage", "Your session has expired. Please log in again.");
+        showSignedOut();
+        return;
+      }
+
+      const creatorName = byId("creatorName").value.trim();
+      const username = byId("username").value.trim();
+
+      if (!creatorName || !username) {
+        showMessage("accountMessage", "Enter both the creator name and username.");
+        return;
+      }
+
+      const button = byId("saveAccountBtn");
+      setBusy(button, true, "Saving…");
+
+      const newAccount = {
+        user_id: signedInUser.id,
+        platform: byId("platform").value,
+        niche: byId("niche").value,
+        creator_name: creatorName,
+        username: username
+      };
+
+      const { error } = await db.from("social_accounts").insert(newAccount);
+
+      setBusy(button, false);
+
+      if (error) {
+        showMessage("accountMessage", "Could not save the account: " + error.message);
+        return;
+      }
+
+      showMessage("accountMessage", "Social account saved successfully.");
+      byId("creatorName").value = "";
+      byId("username").value = "";
+      await loadAccounts();
+    });
+
+    // LOAD THE SIGNED-IN USER'S ACCOUNTS
+    async function loadAccounts() {
+      if (!signedInUser) return;
+
+      const list = byId("accountList");
+      list.textContent = "Loading accounts…";
+
+      const { data, error } = await db
+        .from("social_accounts")
+        .select("platform,niche,creator_name,username")
+        .eq("user_id", signedInUser.id)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        list.textContent = "Could not load accounts: " + error.message;
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        list.textContent = "No social accounts saved yet. Add one using the form above.";
+        return;
+      }
+
+      list.textContent = "";
+
+      data.forEach((account) => {
+        const item = document.createElement("div");
+        item.className = "account-item";
+
+        const name = document.createElement("strong");
+        name.textContent = account.creator_name || "Social account";
+
+        const detail = document.createElement("div");
+        const platformNames = {
+          youtube: "YouTube Shorts",
+          tiktok: "TikTok",
+          instagram: "Instagram Reels"
+        };
+        detail.textContent =
+          (platformNames[account.platform] || account.platform) +
+          " · " + account.niche +
+          " · " + account.username;
+
+        item.append(name, detail);
+        list.appendChild(item);
+      });
+    }
+
+    byId("refreshAccountsBtn").addEventListener("click", loadAccounts);
+
+    // RESTORE AN EXISTING LOGIN SESSION
+    db.auth.getSession().then(({ data, error }) => {
+      if (error) {
+        showSignedOut();
+        return;
+      }
+
+      if (data.session) {
+        signedInUser = data.session.user;
+        showPathScreen();
+      } else {
+        showSignedOut();
+      }
+    });
+
+    db.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        signedInUser = session.user;
+      } else {
+        showSignedOut();
+      }
+    });
+  </script>
+</body>
+</html>
