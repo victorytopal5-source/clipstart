@@ -689,7 +689,7 @@
 
       const { data, error } = await db
         .from("social_accounts")
-        ..select("id,platform,niche,creator_name,username")
+        .select("id,platform,niche,creator_name,username")
         .eq("user_id", signedInUser.id)
         .order("created_at", { ascending: false });
 
