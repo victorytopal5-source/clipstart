@@ -724,7 +724,19 @@
           " · " + account.niche +
           " · " + account.username;
 
-        item.append(name, detail);
+        item.append(name, detail);const selectButton = document.createElement("button");
+selectButton.type = "button";
+selectButton.className = "primary";
+selectButton.textContent = "Start warm-up";
+
+selectButton.addEventListener("click", () => {
+  selectedAccountId = account.id;
+  byId("warmupAccount").textContent =
+    name.textContent + " · " + detail.textContent;
+  showScreen("warmupScreen");
+});
+
+item.append(name, detail, selectButton);
         list.appendChild(item);
       });
     }
