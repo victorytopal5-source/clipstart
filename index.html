@@ -525,7 +525,7 @@
     }
 
     function showScreen(screenId) {
-      ["authScreen", "pathScreen", "accountScreen"].forEach((id) => {
+      ["authScreen", "pathScreen", "accountScreen", "warmupScreen"].forEach((id) => {
         byId(id).classList.toggle("hidden", id !== screenId);
       });
     }
