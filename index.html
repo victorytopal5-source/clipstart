@@ -501,7 +501,8 @@
     const byId = (id) => document.getElementById(id);
     let signedInUser = null;
     let selectedMode = "campaign";
-
+    let selectedAccountId = null;
+    
     function showMessage(id, message) {
       const element = byId(id);
       element.textContent = message;
